@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My JS Project</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-container">
+        <!-- form 시멘틱 태그 사용 -->
+        <form id="user-form" aria-label="연락처 폼" novalidate>
+          <h2>연락처 폼</h2>
+
+          <!-- 이름 -->
+          <div class="input-area">
+            <label for="name">이름</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              required
+              placeholder="이름을 입력하세요"
+            />
+            <div class="error-text" id="nameError"></div>
+          </div>
+
+          <!-- 이메일 -->
+          <div class="input-area">
+            <label for="email">이메일</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="이메일을 입력하세요"
+              aria-required="true"
+              required
+            />
+            <div class="error-text" id="emailError"></div>
+          </div>
+
+          <!-- 메시지 -->
+          <div class="input-area">
+            <label for="message">메시지</label>
+            <textarea
+              id="message"
+              name="message"
+              placeholder="내용을 입력하세요"
+              required
+            ></textarea>
+            <div class="error-text" id="messageError"></div>
+          </div>
+
+          <!-- 제출 버튼 -->
+          <button class="form-submit-btn" type="submit">제출</button>
+        </form>
+        <div class="alert-success">성공적으로 제출되었습니다</div>
+      </div>
+    </div>
+
+    <script>
+      let hasSubmitted = false; // 제출 버튼을 눌렀는지 추적
+
+      function setError(inputEl, errorEl, message) {
+        errorEl.textContent = message;
+        inputEl.classList.add("input-error");
+      }
+
+      function clearError(inputEl, errorEl) {
+        errorEl.textContent = "";
+        inputEl.classList.remove("input-error");
+      }
+
+      function validateName(nameInput, nameError, showError = true) {
+        const value = nameInput.value.trim();
+
+        if (value === "") {
+          if (showError) setError(nameInput, nameError, "이름을 입력하세요");
+          return false;
+        }
+
+        if (value.length < 2) {
+          if (showError)
+            setError(nameInput, nameError, "이름은 2자 이상이어야합니다");
+          return false;
+        }
+
+        if (showError) clearError(nameInput, nameError);
+        return true;
+      }
+
+      function validateEmail(emailInput, emailError, showError = true) {
+        const value = emailInput.value.trim();
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (value === "") {
+          if (showError)
+            setError(emailInput, emailError, "이메일을 입력하세요");
+          return false;
+        }
+
+        if (!emailPattern.test(value)) {
+          if (showError)
+            setError(emailInput, emailError, "유효하지 않은 이메일 형식입니다");
+          return false;
+        }
+
+        if (showError) clearError(emailInput, emailError);
+        return true;
+      }
+
+      function validateMessage(messageInput, messageError, showError = true) {
+        const value = messageInput.value.trim();
+
+        if (value === "") {
+          if (showError)
+            setError(messageInput, messageError, "메시지를 입력하세요");
+          return false;
+        }
+
+        if (value.length < 10) {
+          if (showError)
+            setError(
+              messageInput,
+              messageError,
+              "메시지는 10자 이상이어야합니다",
+            );
+          return false;
+        }
+
+        if (showError) clearError(messageInput, messageError);
+        return true;
+      }
+
+      function updateSubmitButton() {
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const message = messageInput.value.trim();
+
+        const isNameValid = name.length >= 2;
+        const isEmailValid = emailPattern.test(email);
+        const isMessageValid = message.length >= 10;
+
+        const submitBtn = document.querySelector(".form-submit-btn");
+
+        if (isNameValid && isEmailValid && isMessageValid) {
+          submitBtn.classList.add("active");
+        } else {
+          submitBtn.classList.remove("active");
+        }
+      }
+
+      function resetValidation() {
+        // 모든 input-error 제거
+        document.querySelectorAll(".input-error").forEach((el) => {
+          el.classList.remove("input-error");
+        });
+
+        // 모든 에러 메시지 제거
+        nameError.textContent = "";
+        emailError.textContent = "";
+        messageError.textContent = "";
+
+        // 버튼 active 제거
+        const submitBtn = document.querySelector(".form-submit-btn");
+        submitBtn.classList.remove("active");
+
+        // 제출 여부 상태 초기화
+        hasSubmitted = false;
+      }
+
+      const form = document.getElementById("user-form");
+      const nameInput = document.getElementById("name");
+      const emailInput = document.getElementById("email");
+      const messageInput = document.getElementById("message");
+
+      const nameError = document.getElementById("nameError");
+      const emailError = document.getElementById("emailError");
+      const messageError = document.getElementById("messageError");
+
+      // @ 포함, .도메인 포함 여부를 검증하는 정규식
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      // input 이벤트: 제출 후에는 실시간 검증, 제출 전에는 버튼 상태만 업데이트
+      nameInput.addEventListener("input", () => {
+        if (hasSubmitted) {
+          validateName(nameInput, nameError, true);
+        }
+        updateSubmitButton();
+      });
+
+      emailInput.addEventListener("input", () => {
+        if (hasSubmitted) {
+          validateEmail(emailInput, emailError, true);
+        }
+        updateSubmitButton();
+      });
+
+      messageInput.addEventListener("input", () => {
+        if (hasSubmitted) {
+          validateMessage(messageInput, messageError, true);
+        }
+        updateSubmitButton();
+      });
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        // 제출 버튼을 눌렀다고 표시
+        hasSubmitted = true;
+
+        // 제출 시 에러 메시지 표시
+        const isNameValid = validateName(nameInput, nameError, true);
+        const isEmailValid = validateEmail(emailInput, emailError, true);
+        const isMessageValid = validateMessage(
+          messageInput,
+          messageError,
+          true,
+        );
+
+        // 모든 필드가 유효한 경우에만 제출 처리
+        if (isNameValid && isEmailValid && isMessageValid) {
+          // 전송 처리
+          document.querySelector(".alert-success").classList.add("active");
+          setTimeout(() => {
+            document.querySelector(".alert-success").classList.remove("active");
+          }, 3000);
+          // 폼 초기화
+          form.reset();
+
+          // validation 상태 초기화
+          resetValidation();
+        }
+      });
+    </script>
+  </body>
+</html>
