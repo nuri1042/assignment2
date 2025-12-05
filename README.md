@@ -1,4 +1,4 @@
-# Assignment 2 — Input Form Validation
+# Assignment 2 - Input Form Validation
 
 사용자 이름, 이메일, 메시지를 입력받는 폼을 구현하고 **HTML/CSS/JavaScript**를 활용해 입력 유효성 검사, 오류 메시지 표시, 성공 메시지 출력, 반응형 UI를 구현한 프로젝트
 
