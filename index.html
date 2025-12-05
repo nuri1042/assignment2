@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My JS Project</title>
+    <title>Assignment2</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -72,14 +72,17 @@
         inputEl.classList.remove("input-error");
       }
 
+      // 이름 입력 필드 유효성 검증
       function validateName(nameInput, nameError, showError = true) {
         const value = nameInput.value.trim();
 
+        // 이름을 입력하지 않은 경우
         if (value === "") {
           if (showError) setError(nameInput, nameError, "이름을 입력하세요");
           return false;
         }
 
+        // 이름이 2글자 이하인 경우
         if (value.length < 2) {
           if (showError)
             setError(nameInput, nameError, "이름은 2자 이상이어야합니다");
@@ -90,16 +93,19 @@
         return true;
       }
 
+      // 이메일 입력 필드 유효성 검증
       function validateEmail(emailInput, emailError, showError = true) {
         const value = emailInput.value.trim();
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+        // 이메일을 입력하지 않은 경우
         if (value === "") {
           if (showError)
             setError(emailInput, emailError, "이메일을 입력하세요");
           return false;
         }
 
+        // 올바르지 않은 이메일 형식인 경우
         if (!emailPattern.test(value)) {
           if (showError)
             setError(emailInput, emailError, "유효하지 않은 이메일 형식입니다");
@@ -110,15 +116,18 @@
         return true;
       }
 
+      // 메시지 입력 필드 유효성 검증
       function validateMessage(messageInput, messageError, showError = true) {
         const value = messageInput.value.trim();
 
+        // 메시지 입력하지 않은 경우
         if (value === "") {
           if (showError)
             setError(messageInput, messageError, "메시지를 입력하세요");
           return false;
         }
 
+        // 메시지가 10자 이하인 경우
         if (value.length < 10) {
           if (showError)
             setError(
@@ -133,26 +142,26 @@
         return true;
       }
 
+      // 모든 필드 입력 시 버튼 활성화
       function updateSubmitButton() {
-        const name = nameInput.value.trim();
-        const email = emailInput.value.trim();
-        const message = messageInput.value.trim();
-
-        const isNameValid = name.length >= 2;
-        const isEmailValid = emailPattern.test(email);
-        const isMessageValid = message.length >= 10;
-
         const submitBtn = document.querySelector(".form-submit-btn");
 
-        if (isNameValid && isEmailValid && isMessageValid) {
+        // 값이 비어있지 않은지만 체크 (유효성 검사 X)
+        const hasName = nameInput.value.trim() !== "";
+        const hasEmail = emailInput.value.trim() !== "";
+        const hasMessage = messageInput.value.trim() !== "";
+
+        if (hasName && hasEmail && hasMessage) {
           submitBtn.classList.add("active");
+          submitBtn.disabled = false;
         } else {
           submitBtn.classList.remove("active");
+          submitBtn.disabled = true;
         }
       }
 
+      // 모든 input-error 제거
       function resetValidation() {
-        // 모든 input-error 제거
         document.querySelectorAll(".input-error").forEach((el) => {
           el.classList.remove("input-error");
         });
@@ -178,9 +187,6 @@
       const nameError = document.getElementById("nameError");
       const emailError = document.getElementById("emailError");
       const messageError = document.getElementById("messageError");
-
-      // @ 포함, .도메인 포함 여부를 검증하는 정규식
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
       // input 이벤트: 제출 후에는 실시간 검증, 제출 전에는 버튼 상태만 업데이트
       nameInput.addEventListener("input", () => {
@@ -221,7 +227,6 @@
 
         // 모든 필드가 유효한 경우에만 제출 처리
         if (isNameValid && isEmailValid && isMessageValid) {
-          // 전송 처리
           document.querySelector(".alert-success").classList.add("active");
           setTimeout(() => {
             document.querySelector(".alert-success").classList.remove("active");
