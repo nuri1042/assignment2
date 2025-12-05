@@ -38,6 +38,15 @@ assignment2/
 ├── style.css
 └── index.js
 ```
+---
+
+## 실행 방법
+
+### 1. 패키지 설치
+npm install
+
+### 2. 개발 서버 실행
+npm run dev
 
 ---
 
